@@ -65,12 +65,14 @@ def precipitation():
 
 def stations():
     """Return a list of stations"""
-    results=session.query(Station).all()
+    results = session.query(Station).all()
+    
     all_stations = list(np.ravel(results))
     
     return jsonify(all_stations)       
 
-@app.route("/api.v1.0/tobs")
+@app.route("/api/v1.0/tobs")
+
 def tobs():
     """Return dates and temperature observations from a year from the last date point"""
     results = session.query(Measurement.date, Measurement.tobs).\
