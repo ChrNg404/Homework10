@@ -8,17 +8,18 @@ from sqlalchemy import create_engine, func
 from flask import Flask, jsonify
 
 #Database setup
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///hawaii.sqlite", connect_args={'check_same_thread': False}, echo=True)
 
 Base = automap_base()
 
-Base.prepare(engine, reflect = True)
+Base.prepare(engine, reflect=True)
 
 # produce our own MetaData object
-#metadata = MetaData()
+metadata = MetaData()
 
-#metadata.reflect(engine)
+metadata.reflect(engine)
 
+print(metadata.tables.keys())
 
 ##Table('measurement', metadata,
 #                Column('id', Integer, primary_key=True)
@@ -41,7 +42,8 @@ def welcome():
         f"Available Routes:<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/precipitation")
+        f"/api/v1.0/precipitation"
+    )
 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -64,15 +66,20 @@ def precipitation():
 def stations():
     """Return a list of stations"""
     results=session.query(Station).all()
-    return jsonify(results)       
+    all_stations = list(np.ravel(results))
+    
+    return jsonify(all_stations)       
 
-@app.route("api.v1.0/tobs")
+@app.route("/api.v1.0/tobs")
 def tobs():
     """Return dates and temperature observations from a year from the last date point"""
-    results=results = session.query(Measurement.date, Measurement.tobs).\
+    results = session.query(Measurement.date, Measurement.tobs).\
     filter(Measurement.date > '2016-12-31').\
     order_by(Measurement.prcp).all()
-    return jsonify(results)
+    
+    year_tobs = list(np.ravel(results))
+    
+    return jsonify(year_tobs)
    
 #id INTEGER
 #station TEXT
