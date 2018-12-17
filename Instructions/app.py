@@ -53,7 +53,7 @@ def precipitation():
     
     #Create a dictionary and append everything into it
     precip_dict = []
-    for precpitation in results:
+    for measurement in results:
         precipitation_dict = {}
         precipitation_dict["date"] = measurement.date
         precipitation_dict["amount of rain"]= measurement.prcp
